@@ -87,20 +87,19 @@ max-monotonic = min-monotonic ∘ ˘-monotonic-⇐
 
 corefl-propagation-⊑ : {A B : Set} {R : B ← B} {S : B ← A} {C : A ← A} →
   C ⊑ idR → (min R ₁∘ Λ S) ○ C ⊑ (min R ₁∘ Λ (S ○ C)) ○ C
-corefl-propagation-⊑ {A} {B} {R} {S} {C} C⊑idR b a (a' , a'Ca , bSa' , ∀b'-b'Sa'⇒bRb')
+corefl-propagation-⊑ {A} {B} {R} {S} {C} C⊑idR b a (a' , (bSa' , ∀b'-b'Sa'⇒bRb') , a'Ca)
   with C⊑idR a' a a'Ca
-corefl-propagation-⊑ {A} {B} {R} {S} {C} C⊑idR b a (.a , aCa , bSa , ∀b'-b'Sa⇒bRb')
-  | refl = a , aCa , (a , aCa , bSa) , see-below
-  where see-below : (b' : B) → Σ A (λ a' → C a' a × S b' a') → R b b'
-        see-below b' (a' , a'Ca , b'Sa') with C⊑idR a' a a'Ca
-        see-below b' (.a , aCa , b'Sa) | refl = ∀b'-b'Sa⇒bRb' b' b'Sa
-
+corefl-propagation-⊑ {A} {B} {R} {S} {C} C⊑idR b a (.a , (bSa , ∀b'-b'Sa⇒bRb') , aCa)
+  | refl = a , (((a , bSa , aCa) , see-below) , aCa)
+  where see-below : (b' : B) → Σ A (λ a' → S b' a' × C a' a) → R b b'
+        see-below b' (a' , b'Sa' , a'Ca) with C⊑idR a' a a'Ca
+        see-below b' (.a , b'Sa , aCa) | refl = ∀b'-b'Sa⇒bRb' b' b'Sa
 corefl-propagation-⊒ : {A B : Set} {R : B ← B} {S : B ← A} {C : A ← A} →
   C ⊑ idR → (min R ₁∘ Λ S) ○ C ⊒ (min R ₁∘ Λ (S ○ C)) ○ C
-corefl-propagation-⊒ C⊑idR b a (a' , a'Ca , (a'' , a''Ca' , bSa'') , ∀b'-xCa'∧b'Sx⇒bRb')
+corefl-propagation-⊒ C⊑idR b a (a' , ((a'' , bSa'' , a''Ca') , ∀b'-xCa'∧b'Sx⇒bRb') , a'Ca)
   with C⊑idR a' a a'Ca | C⊑idR a'' a' a''Ca'
-corefl-propagation-⊒ C⊑idR b a (.a , aCa , (.a , aCa₂ , bSa) , ∀b'-xCa∧b'Sx⇒bRb')
-  | refl | refl = a , aCa , bSa , λ b' b'Sa → ∀b'-xCa∧b'Sx⇒bRb' b' (a , aCa , b'Sa)
+corefl-propagation-⊒ C⊑idR b a (.a , ((.a , bSa , aCa₂) , ∀b'-xCa∧b'Sx⇒bRb') , aCa)
+  | refl | refl = a , (bSa , λ b' b'Sa → ∀b'-xCa∧b'Sx⇒bRb' b' (a , b'Sa , aCa)) , aCa
 
 minΛ-cong-⊒ : {A B : Set} {R : B ← B} {S T : B ← A} →
   (S ≑ T) → min R ₁∘ Λ S ⊒ min R ₁∘ Λ T

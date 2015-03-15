@@ -19,8 +19,8 @@ corefl-idempotent-⊒ C⊑idR x y yCx with C⊑idR x y yCx
 corefl-idempotent-⊒ C⊑idR x .x xCx | refl = x , xCx , xCx
 
 corefl-idempotent-⊑ : {A : Set} {C : A ← A} → C ⊑ idR → C ○ C ⊑ C
-corefl-idempotent-⊑ C⊑idR y x (z , zCx , yCz) with C⊑idR z x zCx | C⊑idR y z yCz
-corefl-idempotent-⊑ C⊑idR x .x (.x , xCx , xCx') | refl | refl = xCx
+corefl-idempotent-⊑ C⊑idR y x (z , yCz , zCx) with C⊑idR z x zCx | C⊑idR y z yCz
+corefl-idempotent-⊑ C⊑idR x .x (.x , xCx' , xCx) | refl | refl = xCx
 
 open import Data.List using (List)
 open import Data.List.Utilities using (check; corefl-check)

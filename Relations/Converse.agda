@@ -84,14 +84,14 @@ C˘⊑C C⊑id a .a a'Ca | refl = a'Ca
 ˘-○-distr3-⊒ : ∀ {i j} {A : Set i} {B C : Set} {D : Set j} → 
      (R : A ← B) → (S : B ← C) → (T : C ← D) →
         (R ○ S ○ T)˘ ⊒ T ˘ ○ S ˘ ○ R ˘
-˘-○-distr3-⊒ R S T a d (c , (b , bRa , bSc) , cTd) = 
-     (b , (c , cTd , bSc) , bRa)  
+˘-○-distr3-⊒ R S T a d (c , cTd , (b , bSc , bRa)) = 
+     (b , bRa , (c , bSc , cTd))  
 
 ˘-○-distr3-⊑ : ∀ {i j} {A : Set i} {B C : Set} {D : Set j} → 
      {R : A ← B} → {S : B ← C} → {T : C ← D} →
         (R ○ S ○ T)˘ ⊑ T ˘ ○ S ˘ ○ R ˘ 
-˘-○-distr3-⊑ {R} {S} {T} a d (b , (c , cTd , bSc) , bRa) = 
-     (c , (b , bRa , bSc) , cTd)
+˘-○-distr3-⊑ {R} {S} {T} a d (b , bRa , (c , cTd , bSc)) = 
+       (c , bSc , (b , cTd , bRa))
 
 ˘-⨉-distr-⊑ : ∀ {i j k l} {A : Set i} {B : Set j} {C : Set k} {D : Set l} →
   {R : B ← A} → {S : D ← C} → (R ⨉ S)˘ ⊑ (R ˘ ⨉ S ˘)

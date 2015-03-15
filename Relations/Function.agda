@@ -14,7 +14,7 @@ open import AlgebraicReasoning.Implications
 -- Functions are simple and entire
 
 fun-simple : {A B : Set}{f : A → B} → fun f ○ (fun f)˘ ⊑ idR
-fun-simple {A}{B}{f} b' b (a , fa≡b , fa≡b') = 
+fun-simple {A}{B}{f} b' b (a , fa≡b' , fa≡b) = 
    ≡-begin
        b 
    ≡⟨ sym fa≡b ⟩
@@ -25,7 +25,7 @@ fun-simple {A}{B}{f} b' b (a , fa≡b , fa≡b') =
 
 fun-entire : {A B : Set} → {f : A → B} → idR ⊑ (fun f) ˘ ○ fun f
 fun-entire {A}{B}{f} a' a a≡a' = 
-    (f a , refl , cong f (sym a≡a'))
+    (f a , cong f (sym a≡a') , refl)
 
 -- Shunting rules
 
@@ -112,10 +112,10 @@ fun⊑⨉ (a , c) (b , d) f⨉gac≡bd =
 
 fun○-⊑ : {A B C : Set} {g : B → C} {f : A → B} →
     fun g ○ fun f ⊑ fun (g ∘ f)
-fun○-⊑ {g = g}{f = f} c a (b , fa≡b , gb≡c) = 
+fun○-⊑ {g = g}{f = f} c a (b , gb≡c , fa≡b) = 
    subst (λ x → g (f a) ≡ x) gb≡c
      (subst (λ x → g (f a) ≡ g x) fa≡b refl)
 
 fun○-⊒ : {A B C : Set} {g : B → C} {f : A → B} →
     fun g ○ fun f ⊒ fun (g ∘ f)
-fun○-⊒ {f = f} c a gfa≡c = (f a , refl , gfa≡c)
+fun○-⊒ {f = f} c a gfa≡c = (f a , gfa≡c , refl)

@@ -165,7 +165,7 @@ _·_ : {A B : Set} → (B ← A) → ℙ A → ℙ B
 (R · s)  b = ∃ (λ a → (s a × R b a))
 
 _○_ : {i k : Level} {A : Set i} {B : Set}{C : Set k} → C ← B → B ← A → C ← A
-(R ○ S) c a = ∃ (λ b → S b a × R c b)
+(R ○ S) c a = ∃ (λ b → R c b × S b a)
 
 {-
 _○₁_ : {A : Set1} {B C : Set} → C ← B → (B ←₁ A) → (C ←₁ A)
@@ -193,14 +193,14 @@ _₁∘₁_ : {A : Set} {B : Set1} {C : Set1} → (C ← B) → (A → B) → (C
 ○-assocl : ∀ {i} {A : Set i} {B C D : Set} →
        {R : D ← C} {S : C ← B} {T : B ← A} →
             R ○ (S ○ T) ⊑ (R ○ S) ○ T
-○-assocl d a (c , (b , (bTa , cSb)) , dRc) = 
-             (b , (bTa , (c , (cSb  , dRc))))
+○-assocl d a (c , dRc , (b , (cSb , bTa))) = 
+             (b , ((c , (dRc , cSb))) , bTa)
 
 ○-assocr : ∀ {i} {A : Set i} {B C D : Set} →
       {R : D ← C} {S : C ← B} {T : B ← A} →
            (R ○ S) ○ T ⊑ R ○ (S ○ T)
-○-assocr d a (b , (bTa , (c , (cSb  , dRc)))) =
-             (c , ((b , (bTa , cSb)) , dRc))
+○-assocr d a (b , (c , (dRc , cSb)) , bTa) =
+             (c , dRc , (b , (cSb , bTa)))
 {-
 ○₁-assocl : {A : Set1} {B C D : Set} →
        {R : D ← C} {S : C ← B} (T : B ←₁ A) →
@@ -217,37 +217,37 @@ _₁∘₁_ : {A : Set} {B : Set1} {C : Set1} → (C ← B) → (A → B) → (C
 
 ○-monotonic-r : ∀ {i} {A : Set i} {B C : Set} {T : C ← B} {R S : B ← A} →
    R ⊑ S → T ○ R ⊑ T ○ S
-○-monotonic-r R⊑S c a (b , (bRa , cTb)) = 
-                      (b , (R⊑S b a bRa , cTb))  
+○-monotonic-r R⊑S c a (b , (cTb , bRa)) = 
+                      (b , (cTb , R⊑S b a bRa))  
 
 ○-monotonic-l : ∀ {i} {A : Set i} {B C : Set} {T : B ← A} {R S : C ← B} →
     R ⊑ S → R ○ T ⊑ S ○ T
-○-monotonic-l R⊑S c a (b , (bTa , cRb)) =
-                      (b , (bTa , R⊑S c b cRb))
+○-monotonic-l R⊑S c a (b , (cRb , bTa)) =
+                      (b , (R⊑S c b cRb , bTa))
 
 modular-law : ∀ {i} {A : Set i} {B C : Set} {R : C ← B} {S : B ← A} {T : C ← A} 
               → (R ○ S) ⊓ T ⊑ R ○ (S ⊓ (R ˘ ○ T))
-modular-law c a ((b , bSa , cRb) , cTa) = b , (bSa , (c , cTa , cRb)) , cRb
+modular-law c a ((b , cRb , bSa) , cTa) = b , cRb , (bSa , (c , cRb , cTa)) 
 
 ○-⊔-distr-l-⊑ : ∀ {i} {A : Set i} {B C : Set} {R : C ← B} {S : B ← A} {T : B ← A} 
                 → R ○ (S ⊔ T) ⊑ (R ○ S) ⊔ (R ○ T)
-○-⊔-distr-l-⊑ a c (b , inj₁ bSa , cRb) = inj₁ (b , bSa , cRb)
-○-⊔-distr-l-⊑ a c (b , inj₂ bTa , cRb) = inj₂ (b , bTa , cRb)
+○-⊔-distr-l-⊑ a c (b , cRb , inj₁ bSa) = inj₁ (b , cRb , bSa)
+○-⊔-distr-l-⊑ a c (b , cRb , inj₂ bTa ) = inj₂ (b , cRb , bTa )
 
 ○-⊔-distr-l-⊒ : ∀ {i} {A : Set i} {B C : Set} {R : C ← B} {S : B ← A} {T : B ← A} 
                 → R ○ (S ⊔ T) ⊒ (R ○ S) ⊔ (R ○ T)
-○-⊔-distr-l-⊒ a c (inj₁ (b , bSa , cRb)) = b , inj₁ bSa , cRb
-○-⊔-distr-l-⊒ a c (inj₂ (b , bTa , cRb)) = b , inj₂ bTa , cRb
+○-⊔-distr-l-⊒ a c (inj₁ (b , cRb , bSa)) = b , cRb , inj₁ bSa
+○-⊔-distr-l-⊒ a c (inj₂ (b , cRb , bTa)) = b , cRb , inj₂ bTa
 
 ○-⊔-distr-r-⊑ : ∀ {i} {A : Set i} {B C : Set} {R : C ← B} {S : C ← B} {T : B ← A} 
                 → (R ⊔ S) ○ T ⊑ (R ○ T) ⊔ (S ○ T)
-○-⊔-distr-r-⊑ a c (b , bTa , inj₁ cRb) = inj₁ (b , bTa , cRb)
-○-⊔-distr-r-⊑ a c (b , bTa , inj₂ cSb) = inj₂ (b , bTa , cSb)
+○-⊔-distr-r-⊑ a c (b , inj₁ cRb , bTa) = inj₁ (b , cRb , bTa)
+○-⊔-distr-r-⊑ a c (b , inj₂ cSb , bTa) = inj₂ (b , cSb , bTa)
 
 ○-⊔-distr-r-⊒ : ∀ {i} {A : Set i} {B C : Set} {R : C ← B} {S : C ← B} {T : B ← A} 
                 → (R ⊔ S) ○ T ⊒ (R ○ T) ⊔ (S ○ T)
-○-⊔-distr-r-⊒ a c (inj₁ (b , bTa , cRb)) = b , bTa , inj₁ cRb
-○-⊔-distr-r-⊒ a c (inj₂ (b , bTa , cSb)) = b , bTa , inj₂ cSb
+○-⊔-distr-r-⊒ a c (inj₁ (b , cRb , bTa)) = b , inj₁ cRb , bTa
+○-⊔-distr-r-⊒ a c (inj₂ (b , cSb , bTa)) = b , inj₂ cSb , bTa
 
 -- Primitive Relations
 
@@ -256,7 +256,7 @@ fun f b a = f a ≡ b
 
 fun-comp : {A B C : Set} {f : B → C} {g : A → B} →
             fun (f ∘ g)  ⊑  fun f ○ fun g
-fun-comp {g = g} c a fga≡c = (g a , refl , fga≡c)
+fun-comp {g = g} c a fga≡c = (g a , fga≡c , refl)
 
 idR : ∀ {A} → A ← A
 idR = fun id
@@ -268,16 +268,16 @@ id-idempotent-⊑ : ∀ {A} → idR ○ idR ⊑ idR {A}
 id-idempotent-⊑ a .a (.a , refl , refl) = refl 
 
 id-intro-r : ∀ {j} {A} {B : Set j} {R : B ← A} → R ⊒ R ○ idR
-id-intro-r b a (.a , refl , bRa) = bRa  
+id-intro-r b a (.a , bRa , refl) = bRa  
 
 id-intro-l : {A B : Set} {R : B ← A} → R ⊒ idR ○ R
-id-intro-l b a (.b , bRa , refl) = bRa
+id-intro-l b a (.b , refl , bRa) = bRa
 
 id-elim-r : ∀ {j} {A} {B : Set j} {R : B ← A} → R ○ idR ⊒ R 
-id-elim-r b a bRa = (a , refl , bRa) 
+id-elim-r b a bRa = (a , bRa , refl) 
 
 id-elim-l : {A B : Set} {R : B ← A} → idR ○ R ⊒ R 
-id-elim-l b a bRa = (b , bRa , refl) 
+id-elim-l b a bRa = (b , refl , bRa) 
 
 -- Power Transpose
 

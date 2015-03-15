@@ -97,7 +97,7 @@ foldR-induction-⊒ S R e (S○cons⊒Rid⨉S , ℰSnil⊇e) =
           Λ S []
       ⊆∎    
     where ℰSnil⊆ΛS[] :  ℰ S nil ⊆ Λ S []
-          ℰSnil⊆ΛS[] b (.[] , refl , bS[]) = bS[] 
+          ℰSnil⊆ΛS[] b (.[] , bS[] , refl) = bS[] 
    foldr⊑ΛS (x ∷ xs) = 
      let induction-hypothesis = foldr⊑ΛS xs
      in
@@ -116,7 +116,7 @@ foldR-induction-⊒ S R e (S○cons⊒Rid⨉S , ℰSnil⊇e) =
           Λ S (x ∷ xs)
         ⊆∎    
      where ΛScons⊆S∷ : Λ (S ○ cons) (x , xs) ⊆ Λ S (x ∷ xs)
-           ΛScons⊆S∷ b (.(x ∷ xs) , refl , bSx∷xs) = bSx∷xs
+           ΛScons⊆S∷ b (.(x ∷ xs) , bSx∷xs , refl) = bSx∷xs
 
 foldR-induction-⊑ : {A B : Set} →
     (S : B ← List A) → (R : B ← (A × B)) → (e : ℙ B) → 
@@ -143,7 +143,7 @@ foldR-induction-⊑ S R e (S○cons⊑Rid⨉S , ℰSnil⊆e) =
           foldr₁ (Λ (R ○ (idR ⨉ ∈))) e []  
       ⊆∎    
      where ΛS[]⊆ℰSnil :  Λ S [] ⊆ ℰ S nil
-           ΛS[]⊆ℰSnil b aS[] = ([] , refl , aS[]) 
+           ΛS[]⊆ℰSnil b aS[] = ([] , aS[] , refl) 
    ΛS⊑foldr (x ∷ xs) = 
      let induction-hypothesis = ΛS⊑foldr xs
      in
@@ -162,31 +162,29 @@ foldR-induction-⊑ S R e (S○cons⊑Rid⨉S , ℰSnil⊆e) =
            foldr₁ (Λ (R ○ (idR ⨉ ∈))) e (x ∷ xs)
         ⊆∎  
     where S∷⊆ΛScons : Λ S (x ∷ xs) ⊆ Λ (S ○ cons) (x , xs)
-          S∷⊆ΛScons b bSx∷xs = (x ∷ xs , refl , bSx∷xs)
+          S∷⊆ΛScons b bSx∷xs = (x ∷ xs , bSx∷xs , refl)
 
 -- Computation rules
 
 foldR-computation-nil-⊇ : {A B : Set} {R : B ← (A × B)} {e : ℙ B} →
     ℰ (foldR R e) nil ⊇ e
-foldR-computation-nil-⊇ b b∈e = ([] , refl , b∈e) 
+foldR-computation-nil-⊇ b b∈e = ([] , b∈e , refl) 
 
 foldR-computation-nil-⊆ : {A B : Set} {R : B ← (A × B)} {e : ℙ B} →
     ℰ (foldR R e) nil ⊆ e
-foldR-computation-nil-⊆ b (.[] , refl , b∈e) = b∈e 
+foldR-computation-nil-⊆ b (.[] , b∈e , refl) = b∈e 
 
 foldR-computation-cons-⊒ : {A B : Set} (R : B ← (A × B)) {e : ℙ B} →
     foldR R e ○ cons ⊒ R ○ (idR ⨉ foldR R e)
-foldR-computation-cons-⊒ R b' (x , xs) ((_ , b) , (r , bfoldRxs) , b'Rxb) with r
-foldR-computation-cons-⊒ R b' (x , xs) ((.x , b) , (_ , bfoldRxs) , b'Rxb) | refl = 
-  (x ∷ xs , refl , (x , b) , (refl , bfoldRxs) , b'Rxb)
+foldR-computation-cons-⊒ R b' (x , xs) ((_ , b) , b'Rxb , (r , bfoldRxs)) with r
+foldR-computation-cons-⊒ R b' (x , xs) ((.x , b) , b'Rxb , (_ , bfoldRxs)) | refl = 
+  (x ∷ xs , ((x , b) , b'Rxb , (refl , bfoldRxs)) , refl)
 
 foldR-computation-cons-⊑ :
   {A B : Set} (R : B ← (A × B)) {e : ℙ B} →
   foldR R e ○ cons ⊑ R ○ (idR ⨉ foldR R e)
-foldR-computation-cons-⊑ R b (x , xs) (_ , r1 , p) with r1 
-foldR-computation-cons-⊑ R b (x , xs) (._ , _ , ((_ , b') , (r2 , foldR-xs-b') ,  R-x,b'-b)) | refl with r2
-foldR-computation-cons-⊑ R b (x , xs) (._ , _ , ((._ , b') , (_ , foldR-xs-b') ,  R-x,b'-b)) | refl | refl  = 
-   ((x , b') , (refl , foldR-xs-b') , R-x,b'-b)
+foldR-computation-cons-⊑ R b (x , xs) (.(x ∷ xs) , ((.x , b') , (bRx,b' , (refl , b'∈foldR-xs))) , refl) = 
+                                                   ((x , b') , (bRx,b' , (refl , b'∈foldR-xs)))
 
 -- foldr fusion!
 
@@ -257,23 +255,23 @@ foldR-fusion-⊑ R {S} {T} {u} {v} RS⊑TFR Ru⊆v =
          ⊆⟨ Ru⊆v  ⟩ 
             v
          ⊆∎ 
- 
+
 -- from relational fold to functional fold
 
 foldR-to-foldr : {A B : Set} → (f : A → B → B) → (e : B) →
                    foldR (fun (uncurry f)) (singleton e) ⊒ fun (foldr f e)
 foldR-to-foldr f e b []      e≡b        =  e≡b
 foldR-to-foldr f e b (a ∷ x) foldr$x≡b  =
-  ((a , foldr f e x) , 
-      ((refl , (foldR-to-foldr f e
-                    (foldr f e x) x (cong (λ g → foldr g e x) refl))) ,
-            foldr$x≡b))
+  ((a , foldr f e x) , foldr$x≡b , 
+     (refl , (foldR-to-foldr f e
+                    (foldr f e x) x (cong (λ g → foldr g e x) refl)))
+  )
 
 -- idR as a relational fold
 
 idR⊑foldR : {A : Set} → idR ⊑ foldR {A} cons nil
 idR⊑foldR .[] [] refl = refl
-idR⊑foldR .(x ∷ xs) (x ∷ xs) refl = (x , xs) , ((refl , (idR⊑foldR xs xs refl)) , refl)
+idR⊑foldR .(x ∷ xs) (x ∷ xs) refl = (x , xs) , refl , (refl , (idR⊑foldR xs xs refl))
 
 idR⊒foldR : {A : Set} → idR ⊒ foldR {A} cons nil 
 idR⊒foldR = foldR-induction-⊒ idR cons nil (id○cons⊒cons○Pid , ℰidnil⊇nil)
@@ -289,7 +287,7 @@ idR⊒foldR = foldR-induction-⊒ idR cons nil (id○cons⊒cons○Pid , ℰidni
              cons ○ (idR ⨉ idR)
           ⊒∎ 
         ℰidnil⊇nil : ℰ idR nil ⊇ nil
-        ℰidnil⊇nil xs []≡xs = (xs , []≡xs , refl)
+        ℰidnil⊇nil xs []≡xs = (xs , refl , []≡xs)
 
 {-
 module Q (A : Set) where
@@ -507,17 +505,11 @@ foldR-monotonic {R₁ = R₁} {R₂} {S₁} {S₂} R₁⊒R₂ S₁⊇S₂ =
        foldR R₂ S₂
     ⊒∎
   where fuse-base : Λ (foldR R₁ S₁ ○ ∈) nil ⊇ S₂
-        fuse-base b S₂b = ([] , refl , S₁⊇S₂ b S₂b) 
+        fuse-base b S₂b = ([] , S₁⊇S₂ b S₂b , refl) 
 
         fuse-step : (foldR R₁ S₁ ○ cons) ⊒ (R₂ ○ (idR ⨉ foldR R₁ S₁))
-        fuse-step b (a , x) 
-               ((a' , b') , (a≡a' , b'foldR₁x) , bR₂a'b') = 
-          (a ∷ x ,  
-            (refl ,  
-                 ((a' , b') , 
-                    (((a≡a' , b'foldR₁x) , 
-                      R₁⊒R₂ b (a' , b') bR₂a'b')))))
-
+        fuse-step b (a , x) ((a' , b') , bR₂a'b' , (a≡a' , b'foldR₁x)) = 
+                (a ∷ x , (((a' , b') , (R₁⊒R₂ b (a' , b') bR₂a'b' , a≡a' , b'foldR₁x)) , refl))
 -- coreflexive folds
 
 corefl-foldR : {A : Set} {C : (A × List A) ← (A × List A)} {s : ℙ (List A)} →

@@ -97,7 +97,7 @@ acc-fRfº : {A B : Set}{R : A ← A}{f : A → B} →
 acc-fRfº {A}{B}{R}{f} x (acc ._ h) = acc x access 
   where access : (y : A) → R y x → Acc R y
         access y yRx = 
-         acc-fRfº y (h (f y) (y , (x , refl , yRx) , refl))
+          acc-fRfº y (h (f y) (y , refl , (x , yRx , refl)))
 
 data _⁺ {A : Set}(R : A ← A) : A → A → Set where
   ⁺-base : ∀ {x y} → R x y → (R ⁺) x y
@@ -109,4 +109,4 @@ acc-tc {A}{R} x ac = acc x (access x ac)
   where access : (x : A) → Acc R x → (y : A) → (R ⁺) y x → Acc (R ⁺) y
         access x (acc .x h) y (⁺-base yRx) = acc-tc y (h y yRx)  
         access x (acc .x h) y (⁺-step (z , (yR⁺z , zRx))) = 
-           access z (h z zRx) y yR⁺z
+          access z (h z zRx) y yR⁺z

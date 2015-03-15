@@ -51,5 +51,5 @@ conv-fun-thm f R e fR⊑consf fe⊆nil =
          ) fR⊑consf
        fusion-base :  Λ ((fun f)˘ ○ ∈) nil ⊇ e
        fusion-base b b∈e = 
-         ([] , refl , sym (fe⊆nil (f b) (b , b∈e , refl)))  
+         ([] , sym (fe⊆nil (f b) (b , b∈e , refl)) , refl)  
 

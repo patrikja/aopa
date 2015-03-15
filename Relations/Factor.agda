@@ -17,12 +17,12 @@ _/_ : ∀ {j k} {A : Set} {B : Set j} {C : Set k} → (B ← A) → (C ← A) �
 /-universal-⇒ : ∀ {i} {A : Set} {B : Set} {C : Set i} → 
    {R : C ← B} {S : B ← A} {T : C ← A} →
       R ○ S ⊑ T → R ⊑ T / S
-/-universal-⇒ RS⊑T c b cRb a bSa = RS⊑T c a (b , bSa , cRb)
+/-universal-⇒ RS⊑T c b cRb a bSa = RS⊑T c a (b , cRb , bSa)
 
 /-universal-⇐ : ∀ {i} {A : Set} {B : Set} {C : Set i} → 
    {R : C ← B} {S : B ← A} {T : C ← A} →
       R ⊑ T / S →  R ○ S ⊑ T 
-/-universal-⇐ R⊑T/S c a (b , bSa , cRb) = R⊑T/S c b cRb a bSa
+/-universal-⇐ R⊑T/S c a (b , cRb , bSa) = R⊑T/S c b cRb a bSa
 
 /-universal : ∀ {i} {A : Set} {B : Set} {C : Set i} → 
    {R : C ← B} {S : B ← A} {T : C ← A} →

@@ -120,13 +120,13 @@ open import AlgebraicReasoning.Relations
                forall a →    Λ (T ○ (idR ⨉ ∈)) (a , s)
                             ⊆ Λ (T ○ (idR ⨉ ∈)) (a , t)
 Λ⨉-monotonic _ s⊆t a x 
-     ((a' , b') , (a≡a' ,        sb') , T<a',b'>x) =
-       ((a' , b') , (a≡a' , s⊆t b' sb') , T<a',b'>x)
+     ((a' , b') , T<a',b'>x , (a≡a' ,        sb')) =
+       ((a' , b') , T<a',b'>x , (a≡a' , s⊆t b' sb'))
 
 Λ⨉⨉-monotonic : {A B C D : Set}{s t : ℙ B}{u v : ℙ C}
        (T : D ← (A × B × C)) → s ⊆ t → u ⊆ v →
                forall a →    Λ (T ○ (idR ⨉ ∈ ⨉ ∈)) (a , s , u)
                             ⊆ Λ (T ○ (idR ⨉ ∈ ⨉ ∈)) (a , t , v)
 Λ⨉⨉-monotonic _ s⊆t u⊆v a x 
-     ((a' , b' , c') , (a≡a' , b'∈s , c'∈u) , xT<a'b'c'>)
-   =  ((a' , b' , c') , (a≡a' , s⊆t b' b'∈s , u⊆v c' c'∈u) , xT<a'b'c'>) 
+     ((a' , b' , c') , xT<a'b'c'> , (a≡a' , b'∈s , c'∈u))
+   =  ((a' , b' , c') , xT<a'b'c'> , (a≡a' , s⊆t b' b'∈s , u⊆v c' c'∈u)) 

@@ -64,8 +64,7 @@ foldR-unfoldr : {A B : Set} → (f : B → ⊤ ⊎ (A × B)) →
 foldR-unfoldr f b (acc .b h) with f b | inspect f b
 foldR-unfoldr f b (acc .b h) | inj₁ tt | [ fb≡v ] = fb≡v
 foldR-unfoldr f b (acc .b h) | inj₂ (a , b') | [ fb≡v ] = 
-  ((a , b') , (refl , foldR-unfoldr f b' (h b' (inj₂ (a , b') , refl , refl))) ,
-                inj₂ (a , b') , fb≡v , refl)
+     ((a , b') , (inj₂ (a , b') , refl , fb≡v) , refl , foldR-unfoldr f b' (h b' (inj₂ (a , b') , refl , refl)))
 
 foldR-to-unfoldr : {A B : Set} → (f : B → ⊤ ⊎ (A × B)) →
    (wf : well-found (ε-listF ○ fun f)) →
@@ -82,8 +81,8 @@ predF 0 = inj₁ tt
 predF (suc n) = inj₂ (n , n)
 
 predF⊑< : (ε-listF ○ fun predF) ⊑ _<′_ 
-predF⊑< n 0 (._ , refl , ())
-predF⊑< n (suc m) (._ , refl , m≡n) = subst (λ i → suc i ≤′ suc m) m≡n ≤′-refl
+predF⊑< n 0 (._ , () , refl)
+predF⊑< n (suc m) (._ , m≡n , refl) = subst (λ i → suc i ≤′ suc m) m≡n ≤′-refl
 
 down : ℕ → List ℕ
 down = unfoldr predF (λ x → acc-⊑ predF⊑< x (ℕ<-wf x))

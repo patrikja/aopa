@@ -55,7 +55,7 @@ open import AlgebraicReasoning.Sets
 
 ℰ-monotonic' : {A B : Set} {R : B ← A} {s t : ℙ A} →
     (s ⊆ t) →  (ℰ R s ⊆ ℰ R t)
-ℰ-monotonic' s⊆t b (a , a∈s , bRa) = (a , s⊆t a a∈s , bRa) 
+ℰ-monotonic' s⊆t b (a , bRa , a∈s) = (a , bRa , s⊆t a a∈s) 
 
 ℰ-functor-⊆ : {A B C : Set} → {R : B ← A} →
       {S : C ← B} → ∀ {a} →
